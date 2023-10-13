@@ -107,4 +107,21 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     }
 
+    /**
+     * 启用禁用员工账号
+     * @param status
+     * @param id
+     */
+    @Override
+    public void startAndStop(Integer status, long id) {
+        //为提高代码的复用性，前端提交过来的修改操作，可以只调用update访问数据库
+        //为了实现上面的操作，我们可以设置update函数形参为employee实体
+        //创建employee实体
+        Employee employee = Employee.builder()
+                .status(status)
+                .id(id)
+                .build();
+        employeeMapper.update(employee);
+    }
+
 }
