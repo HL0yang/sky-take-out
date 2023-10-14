@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @Slf4j
 @RequestMapping("/admin/category")
@@ -50,4 +52,62 @@ public class CategoryController {
         return Result.success(pageResult);
     }
 
+    /**
+     * 根据id删除员工
+     * @param id
+     * @return
+     */
+    @ApiOperation(value = "根据id删除")
+    @DeleteMapping()
+    public Result deleteById(Long id){
+        log.info("删除员工id：{}",id);
+        categoryService.deleteById(id);
+
+        return Result.success();
+    }
+
+    /**
+     * 根据类型查询
+     * @param type
+     * @return
+     */
+    @GetMapping("/list")
+    @ApiOperation(value = "根据类型查询")
+    public Result<List> getByType(Integer type){
+
+        log.info("查询类型为:{}",type);
+
+        List<Category> list  = categoryService.getByType(type);
+
+        return Result.success(list);
+    }
+
+    /**
+     * 启用禁用
+     * @param status
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation(value = "启用禁用")
+    public Result startAndStop(@PathVariable Integer status,Long id){
+        log.info("启用禁用状态：{}，id为：{}",status,id);
+
+        categoryService.startAndStop(status,id);
+        return Result.success();
+    }
+
+    /**
+     * 修改分类
+     * @param categoryDTO
+     * @return
+     */
+    @PutMapping()
+    @ApiOperation(value = "修改分类")
+    public Result updateCategory(@RequestBody CategoryDTO categoryDTO){
+
+        log.info("修改分类：{}",categoryDTO);
+        categoryService.updateCategory(categoryDTO);
+
+        return Result.success();
+    }
 }
