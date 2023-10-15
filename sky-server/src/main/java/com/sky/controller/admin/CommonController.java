@@ -46,9 +46,9 @@ public class CommonController {
             String firstName = UUID.randomUUID().toString();
 
             objectName = firstName+lastName;
-            aliOssUtil.upload(file.getBytes(), objectName);
+            String filePath = aliOssUtil.upload(file.getBytes(), objectName);
 
-            return Result.success(objectName);
+            return Result.success(filePath);
         } catch (IOException e) {
             log.error("文件上传失败：{}",e);
         }
