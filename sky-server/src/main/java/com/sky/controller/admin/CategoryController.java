@@ -75,7 +75,7 @@ public class CategoryController {
     @ApiOperation(value = "根据类型查询")
     public Result<List> getByType(Integer type){
 
-        log.info("查询类型为:{}",type);
+        log.info("根据菜品类型查询为:{}",type);
 
         List<Category> list  = categoryService.getByType(type);
 
