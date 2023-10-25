@@ -88,7 +88,7 @@ public class DishServiceImpl implements DishService {
         }
         //2.查看当前菜品是否被关联了
         List<SetmealDish> setmealDishes = setmealDishMapper.getByDishIds(list);
-        if(setmealDishes!=null&&setmealDishes.size()>=0){
+        if(setmealDishes!=null&&setmealDishes.size()>0){
             //当前关联套餐，不能删除
             throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
         }
@@ -144,20 +144,53 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 菜品起售停售
+     *
      * @param status
+     * @param id
      */
-    public void startAndStop(Integer status) {
+    public void startAndStop(Integer status, Long id) {
 
         Dish dish = new Dish();
         dish.setStatus(status);
+        dish.setId(id);
         dishMapper.updateDish(dish);
 
     }
+    /**
+     * 根据分类id查询菜品
+     *
+     * @param categoryId
+     * @return
+     */
 
     @Override
     public List<Dish> selectByCategoryId(Long categoryId) {
 
         List<Dish> dishes = dishMapper.selectByCategoryId(categoryId);
         return dishes;
+    }
+
+    /**
+     * 条件查询菜品和口味
+     * @param dish
+     * @return
+     */
+    public List<DishVO> listWithFlavor(Dish dish) {
+        List<Dish> dishList = dishMapper.list(dish);
+
+        List<DishVO> dishVOList = new ArrayList<>();
+
+        for (Dish d : dishList) {
+            DishVO dishVO = new DishVO();
+            BeanUtils.copyProperties(d,dishVO);
+
+            //根据菜品id查询对应的口味
+            List<DishFlavor> flavors = dishFlavorMapper.getByDishId(d.getId());
+
+            dishVO.setFlavors(flavors);
+            dishVOList.add(dishVO);
+        }
+
+        return dishVOList;
     }
 }
