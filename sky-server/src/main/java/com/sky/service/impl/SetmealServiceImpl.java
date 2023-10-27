@@ -6,6 +6,7 @@ import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
+import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
 import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
@@ -27,6 +28,7 @@ public class SetmealServiceImpl implements SetmealService {
     @Autowired
     private SetmealDishMapper setmealDishMapper;
 
+
     /**
      * 新增套餐
      * @param setmealDTO
@@ -39,6 +41,9 @@ public class SetmealServiceImpl implements SetmealService {
         setmealMapper.insertSetmeal(setmeal);
 
         List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
+        setmealDishes.forEach(setmealDish -> {
+            setmealDish.setSetmealId(setmeal.getId());
+        });
 
         setmealDishMapper.insert(setmealDishes);
     }
@@ -60,10 +65,14 @@ public class SetmealServiceImpl implements SetmealService {
      * 批量删除套餐
      * @param ids
      */
+    @Transactional
     public void deleteByIds(List<Long> ids) {
 
         if(ids!=null && ids.size()!=0){
             setmealMapper.deleteByIds(ids);
+            for (Long id : ids) {
+                setmealDishMapper.deleteBySetmealId(id);
+            }
         }
 
     }
@@ -105,7 +114,7 @@ public class SetmealServiceImpl implements SetmealService {
         BeanUtils.copyProperties(setmealDTO,setmeal);
         setmealMapper.update(setmeal);
 
-        setmealDishMapper.deleteBySetmealId(setmealDTO.getId());
+        setmealDishMapper.deleteBySetmealId(setmeal.getId());
 
         List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
         setmealDishMapper.insert(setmealDishes);

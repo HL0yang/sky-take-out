@@ -14,7 +14,6 @@ import java.util.List;
 public interface SetmealDishMapper {
     List<SetmealDish> getByDishIds(List<Long> list);
 
-    @AutoFill(OperationType.INSERT)
     void insert(List<SetmealDish> setmealDishes);
 
     @Delete("delete from setmeal_dish where setmeal_id = #{id}")
